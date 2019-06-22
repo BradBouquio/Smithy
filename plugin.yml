@@ -1,0 +1,8 @@
+name: Smithy
+main: net.minespire.smithy.Smithy
+version: 1.0
+api-version: 1.13
+commands:
+   smithy:
+      description: The main command
+      usage: /smithy

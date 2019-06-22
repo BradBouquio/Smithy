@@ -1,0 +1,94 @@
+#>====> >====> >====> >====> >====> >====> >====> >====> >====> >====> >====> >====> >====> >====> >====> >====> >====>#
+#                                                                                                                      #
+#    If you like this plugin           ███████╗███╗   ███╗██╗████████╗██╗  ██╗██╗   ██╗                                #
+#    please donate or leave            ██╔════╝████╗ ████║██║╚══██╔══╝██║  ██║╚██╗ ██╔╝                                #
+#    a review on SpigotMC!             ███████╗██╔████╔██║██║   ██║   ███████║ ╚████╔╝                                 #
+#                                      ╚════██║██║╚██╔╝██║██║   ██║   ██╔══██║  ╚██╔╝                                  #
+#    Any amount helps! Thanks :)       ███████║██║ ╚═╝ ██║██║   ██║   ██║  ██║   ██║                                   #
+#    PayPal: fortyeffsmc@gmail.com     ╚══════╝╚═╝     ╚═╝╚═╝   ╚═╝   ╚═╝  ╚═╝   ╚═╝                                   #
+#                                                                                                                      #
+#>====> >====> >====> >====> >====> >====> >====> >====> >====> >====> >====> >====> >====> >====> >====> >====> >====>#
+Version: 1.0.0 # Do not change this
+
+General:
+  RightClickGUI: true # Whether right clicking opens smithy menu. Disable this if using McMMO.
+  
+Currency:
+  Name: point:points       # Give the singular and plural form separated by a colon if you change this
+  StartingBalance: 10      # This is its own currency accumulated by using the tools
+  Accumulation: tool       # Can be tool or player. Tool accumulates currency on the tool itself. player accumulates currency on the tool
+  DecimalPlaces: 0         # How many decimal places to include. 0 will round costs to the nearest whole number
+  
+Tools:
+  Tool1:
+    DisplayName: 'Smithy Powerdrill' # Set to '' to keep the item's normal name. Item's can be renamed at any time without breaking the tool
+    Item: Diamond_Pickaxe
+    RepairCost: 1000
+    CurrencyGain: 0.1      # This defines how much currency a player gets per block broken.
+    DefaultEnchants: DIG_SPEED:1:20,DURABILITY:1:10
+    # Enchants follow this format EnchantName:StartingLevel:MaxLevel - Separate enchants with a comma
+    # Full list of enchant names https://hub.spigotmc.org/javadocs/spigot/org/bukkit/enchantments/Enchantment.html
+    Costs:
+      UpgradeInitial: 100,150  # Include a upgrade starting cost for each enchant above, separated by a comma
+      Multiplier: 1.5,1.6           # Each additional level multiplier. For example 100 starting cost and 1.5 multiplier would be 100, 150, 225 etc.
+    UnlockableEnchants: LOOT_BONUS_BLOCKS,SILK_TOUCH
+    UnlockCosts:
+      UnlockCost: 1000,10000
+      UpgradeInitial: 100,150
+      Multiplier: 1.5,1.6
+  Tool2:
+    DisplayName: 'Smithy Treefeller'
+    Item: Diamond_Axe
+    CurrencyGain: 0.1
+    RepairCost: 1000
+    DefaultEnchants: DIG_SPEED:1:20,DURABILITY:1:10
+    Costs:
+      UpgradeInitial: 100,150
+      Multiplier: 1.5,1.6
+    UnlockableEnchants: LOOT_BONUS_BLOCKS,SILK_TOUCH
+    UnlockCosts:
+      UpgradeInitial: 1000,10000
+      UpgradeStartingCost: 100,150
+      Multiplier: 1.5,1.6
+  Tool3:
+    DisplayName: 'Smithy Excavator'
+    Item: Diamond_Shovel
+    CurrencyGain: 0.1
+    RepairCost: 1000
+    DefaultEnchants: DIG_SPEED:1:20,DURABILITY:1:10
+    Costs:
+      UpgradeInitial: 100,150
+      Multiplier: 1.5,1.6
+    UnlockableEnchants: LOOT_BONUS_BLOCKS,SILK_TOUCH
+    UnlockCosts:
+      UnlockCost: 1000,10000
+      UpgradeInitial: 100,150
+      Multiplier: 1.5,1.6
+  Tool4:
+    DisplayName: 'Smithy Powertiller'
+    Item: Diamond_Hoe
+    CurrencyGain: 0.1
+    RepairCost: 1000
+    DefaultEnchants: DIG_SPEED:1:20,DURABILITY:1:10
+    Costs:
+      UpgradeInitial: 100,150
+      Multiplier: 1.5,1.6
+    UnlockableEnchants: LOOT_BONUS_BLOCKS,SILK_TOUCH
+    UnlockCosts:
+      UnlockCost: 1000,10000
+      UpgradeInitial: 100,150
+      Multiplier: 1.5,1.6
+
+GUI:
+  GUIName: 'Tool Upgrade Menu'
+  MenuItems:
+    Enchants:
+      Item: DIAMOND_PICKAXE
+      ItemName: 'Tool Upgrades'
+      Lore: 'Use your points to buy|better enchants for your tools!' # Separate lore into new lines with the pipe symbol (|).
+      InventorySlot: 21
+    Repair:
+      Item: ANVIL
+      ItemName: 'Repair'
+      Lore: 'Use your points to repair|a tool!' # Separate lore into new lines with the pipe symbol (|).
+      InventorySlot: 24
