@@ -9,6 +9,9 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.inventory.meta.tags.ItemTagType;
+
+import net.md_5.bungee.api.ChatColor;
 
 public class SmithyGUI {
 	private Inventory GUI;
@@ -44,13 +47,21 @@ public class SmithyGUI {
 		ItemMeta meta = guiItem[itemNumber].getItemMeta();
 		
 		
-		String[] lorePieces = lore.split("\\|");
-		for(String t : lorePieces) {
-			itemLore.add(t);
-		}
 		
-		meta.setDisplayName(name);
-		itemLore.add(0, "Blocks Broken: " + Tool.getTotalBlocksBroken(item));
+		//for(String t : lorePieces) {
+		//	itemLore.add(t);
+		//}
+		Tool tool = Tool.checkForTool(item);
+		name = parsePlaceholders(name, tool);
+		meta.setDisplayName(ChatColor.translateAlternateColorCodes('&', name));
+		lore = parsePlaceholders(lore, tool);
+		String[] lorePieces = lore.split("\\|");
+		
+		for(int x = 0;x < lorePieces.length; x++) {
+			itemLore.add(x, ChatColor.translateAlternateColorCodes('&', lorePieces[x]));
+		}
+		//itemLore.add(0, "Blocks Broken: " + tool.getBlocksBroken());
+		//itemLore.add(1, "Energy: " + String.format("%." + Smithy.plugin.getConfig().getString("Currency.DecimalPlaces") + "f", tool.getEnergy()));
 		meta.setLore(itemLore);
 		guiItem[itemNumber].setItemMeta(meta);
 		GUI.setItem(slot, guiItem[itemNumber]);
@@ -59,6 +70,13 @@ public class SmithyGUI {
 	
 	public void openSmithyGUI(Player player) {
 		player.openInventory(GUI);
+	}
+	
+	public String parsePlaceholders(String string, Tool tool) {
+		string = string.replace("{BlocksBroken}", String.valueOf(tool.getBlocksBroken()));
+		string = string.replace("{Currency}", String.format("%." + Smithy.plugin.getConfig().getString("Currency.DecimalPlaces") + "f", tool.getEnergy()));
+		string = string.replace("{ItemName}", String.valueOf(tool.getDisplayName()));
+		return string;
 	}
 }
 

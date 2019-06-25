@@ -14,14 +14,14 @@ General:
   RightClickGUI: true # Whether right clicking opens smithy menu. Disable this if using McMMO.
   
 Currency:
-  Name: point:points       # Give the singular and plural form separated by a colon if you change this
-  StartingBalance: 10      # This is its own currency accumulated by using the tools
-  Accumulation: tool       # Can be tool or player. Tool accumulates currency on the tool itself. player accumulates currency on the tool
-  DecimalPlaces: 0         # How many decimal places to include. 0 will round costs to the nearest whole number
+  Name: Energy:Energy      # Give the singular and plural form separated by a colon if you change this
+  StartingBalance: 100     # This is the currency accumulated on the tool by using it
+  DecimalPlaces: 0         # How many decimal places to show to currency total
+  GainRate: 3.0            # How much currency to gain per block broken
   
 Tools:
   Tool1:
-    DisplayName: 'Smithy Powerdrill' # Set to '' to keep the item's normal name. Item's can be renamed at any time without breaking the tool
+    DisplayName: '&6Smithy Powerdrill' # Set to '' to keep the item's normal name. Item's can be renamed at any time without breaking the tool
     Item: Diamond_Pickaxe
     RepairCost: 1000
     CurrencyGain: 0.1      # This defines how much currency a player gets per block broken.

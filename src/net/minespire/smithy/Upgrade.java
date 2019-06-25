@@ -20,6 +20,8 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.tags.CustomItemTagContainer;
 import org.bukkit.inventory.meta.tags.ItemTagType;
 
+import net.md_5.bungee.api.ChatColor;
+
 public class Upgrade implements Listener{
 
 	private Player player;
@@ -36,7 +38,7 @@ public class Upgrade implements Listener{
 	public void toolUpgrade(Player player) {
 		this.player = player;
 		ItemStack heldItem = player.getInventory().getItemInMainHand();
-		if(Tool.checkForTool(heldItem)) {
+		if(Tool.checkForTool(heldItem) != null) {
 			createGui(heldItem);
 		}
 	}
@@ -48,19 +50,19 @@ public class Upgrade implements Listener{
 		ItemStack itemStack;
 		try {
 			if(!click.getAction().equals(Action.RIGHT_CLICK_AIR) && !click.getAction().equals(Action.RIGHT_CLICK_BLOCK)) return;
-			itemStack = click.getItem();
+			if(click.getPlayer().getInventory().getItemInMainHand().getType().equals(Material.AIR)) return;
+			itemStack = click.getPlayer().getInventory().getItemInMainHand();
 			player = click.getPlayer();
-			
 		}
 		catch(Exception e) {
 			return;
 		}
-
-		if(Tool.checkForTool(itemStack)) {
+		
+		if(Tool.checkForTool(itemStack) != null) {
 			createGui(itemStack);
 		}
 	}
-	
+
 	//what to do when player clicks inside Upgrade Menu
 	@EventHandler(priority = EventPriority.HIGH)
 	public void cancelInventoryClick(InventoryClickEvent clickEvent) {
@@ -72,17 +74,19 @@ public class Upgrade implements Listener{
 	@EventHandler(priority = EventPriority.HIGH, ignoreCancelled = false)
 	public void blockBroken(BlockBreakEvent breakEvent) {
 		
-		if(Tool.checkForTool(breakEvent.getPlayer().getInventory().getItemInMainHand())) {
-			Tool.addToBlockTotal(breakEvent.getPlayer().getInventory().getItemInMainHand(), breakEvent.getPlayer());
+		Tool tool = Tool.checkForTool(breakEvent.getPlayer().getInventory().getItemInMainHand());
+		if(tool != null) {
+			tool.addToBlockTotal(1);
+			tool.addEnergy(Tool.currencyGainRate);
 		}
+		
 	}
-
 	
     public void createGui(ItemStack itemInHand) {
     	SmithyGUI gui = new SmithyGUI(54, upgradeGuiName);
-    	gui.makeGuiItem(itemInHand.getItemMeta().getDisplayName(), itemInHand, "Multiple lines|is awesome!", itemInHand.getType(), 0, 22);
-    	gui.makeGuiItem("Enchants", "Multiple lines|is awesome!", Material.EXPERIENCE_BOTTLE, 0, 29);
-    	gui.makeGuiItem("Tools Points", "Multiple lines|is awesome!", Material.ENCHANTED_BOOK, 1, 33);
+    	gui.makeGuiItem(Smithy.plugin.getConfig().getString("GUI.MenuItems.Tool.ItemName"), itemInHand, Smithy.plugin.getConfig().getString("GUI.MenuItems.Tool.Lore"), itemInHand.getType(), 0, Smithy.plugin.getConfig().getInt("GUI.MenuItems.Tool.InventorySlot"));
+    	gui.makeGuiItem("Enchants", "Multiple lines|is awesome!", Material.EXPERIENCE_BOTTLE, 1, Smithy.plugin.getConfig().getInt("GUI.MenuItems.Enchants.InventorySlot"));
+    	gui.makeGuiItem("Tools Points", "Multiple lines|is awesome!", Material.ENCHANTED_BOOK, 2, Smithy.plugin.getConfig().getInt("GUI.MenuItems.Repair.InventorySlot"));
     	gui.openSmithyGUI(player);
     }
 	
