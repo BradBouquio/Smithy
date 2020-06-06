@@ -1,17 +1,13 @@
 package com.CraftedPlugins.cyberkm;
 
+import net.minespire.smithy.Smithy;
+import net.minespire.smithy.Tool;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.logging.Level;
-
-import org.bukkit.entity.Player;
-
-import com.CraftedPlugins.cyberkm.Error; // YOU MUST IMPORT THE CLASS ERROR, AND ERRORS!!!
-import com.CraftedPlugins.cyberkm.Errors;
-import net.minespire.smithy.Smithy; // Import main class!
-import net.minespire.smithy.Tool;
 
 
 public abstract class Database {
@@ -57,8 +53,10 @@ public abstract class Database {
             while(rs.next()){
                 if(rs.getString("toolID").equals(id)){ // Tell database to search for the player you sent into the method. e.g getTokens(sam) It will look for sam.
                     tool = new Tool();
+                    tool.setID(rs.getString("toolID"));
                 	tool.setBlocksBroken(rs.getLong("blocksBroken")); // Return the players ammount of kills. If you wanted to get total (just a random number for an example for you guys) You would change this to total!
                     tool.setEnergy(rs.getDouble("energy"));
+                    tool.setConfigDefinedToolName(rs.getString("toolConfigName"));
                 }
             }
         } catch (SQLException ex) {
@@ -106,23 +104,25 @@ public abstract class Database {
     }
 
 // Now we need methods to save things to the database
-    public void saveTool(String id, Long blocksBroken, Double energy) {
+    public void saveTool(Tool tool) {
         Connection conn = null;
         PreparedStatement ps = null;
         try {
             conn = getSQLConnection();
-            ps = conn.prepareStatement("REPLACE INTO " + table + " (toolID,blocksBroken,energy) VALUES(?,?,?)"); // IMPORTANT. In SQLite class, We made 3 colums. player, Kills, Total.
-            ps.setString(1, id);                                             // YOU MUST put these into this line!! And depending on how many
+            ps = conn.prepareStatement("REPLACE INTO " + table + " (toolID,blocksBroken,energy,toolConfigName) VALUES(?,?,?,?)"); // IMPORTANT. In SQLite class, We made 3 colums. player, Kills, Total.
+            ps.setString(1, tool.getID());                                             // YOU MUST put these into this line!! And depending on how many
                                                                                                          // colums you put (say you made 5) All 5 need to be in the brackets
                                                                                                          // Seperated with comma's (,) AND there needs to be the same amount of
                                                                                                          // question marks in the VALUES brackets. Right now i only have 3 colums
                                                                                                          // So VALUES (?,?,?) If you had 5 colums VALUES(?,?,?,?,?)
-                                                                                                
-            ps.setLong(2, blocksBroken); // This sets the value in the database. The colums go in order. Player is ID 1, kills is ID 2, Total would be 3 and so on. you can use
+
+
+            ps.setLong(2, tool.getBlocksBroken()); // This sets the value in the database. The colums go in order. Player is ID 1, kills is ID 2, Total would be 3 and so on. you can use
                                   // setInt, setString and so on. tokens and total are just variables sent in, You can manually send values in as well. p.setInt(2, 10) <-
                                   // This would set the players kills instantly to 10. Sorry about the variable names, It sets their kills to 10 i just have the variable called
                                   // Tokens from another plugin :/
-            ps.setDouble(3, energy);
+            ps.setDouble(3, tool.getEnergy());
+            ps.setString(4, tool.getConfigDefinedToolName());
             ps.executeUpdate();
             return;
         } catch (SQLException ex) {

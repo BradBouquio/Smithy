@@ -1,47 +1,49 @@
 package net.minespire.smithy;
 
-import java.util.Set;
-
+import net.md_5.bungee.api.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
-import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.tags.CustomItemTagContainer;
 import org.bukkit.inventory.meta.tags.ItemTagType;
-import org.bukkit.persistence.PersistentDataContainer;
-import org.bukkit.persistence.PersistentDataHolder;
-import org.bukkit.persistence.PersistentDataType;
 
-import net.md_5.bungee.api.ChatColor;
-
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
 
 
 public class Tool {
 	private String displayName;
 	public static NamespacedKey toolID = new NamespacedKey(Smithy.plugin, "ToolID");
 	public static final String[] tools = new String[100];
+	public static Map<String, Tool> toolSet = new HashMap<>(100);
 	private long blocksBroken;
 	private double energy;
 	private String uniqueToolID;
 	private boolean inToolMap = false; 
 	private ItemStack item;
 	private ItemMeta itemMeta;
+	private Map<Enchantment,Integer> enchantmentList;
+	private String configDefinedToolName;
 	public static double currencyGainRate = Smithy.plugin.getConfig().getDouble("Currency.GainRate");
 
 	public Tool(String toolName) {
 		this.displayName = Smithy.plugin.getConfig().getString("Tools." + toolName + ".DisplayName");
+		configDefinedToolName = toolName;
 		energy = Smithy.plugin.getConfig().getDouble("Currency.StartingBalance");
 		item = new ItemStack(Material.getMaterial(Smithy.plugin.getConfig().getString("Tools." + toolName + ".Item").toUpperCase()));
 		itemMeta = item.getItemMeta();
-		uniqueToolID = Smithy.plugin.getToolID();
+		enchantmentList = item.getEnchantments();
+		uniqueToolID = getToolID();
 		CustomItemTagContainer tagContainer = itemMeta.getCustomTagContainer();
-		
-		itemMeta.getCustomTagContainer().setCustomTag(toolID, ItemTagType.STRING, uniqueToolID);
+
+		tagContainer.setCustomTag(toolID, ItemTagType.STRING, uniqueToolID);
 		itemMeta.setDisplayName(ChatColor.translateAlternateColorCodes('&', displayName));
 		item.setItemMeta(itemMeta);
-		Smithy.plugin.saveToolToMap(this);
+		saveToolToMap(this);
 		this.saveToDatabase();
 	}
 	
@@ -62,15 +64,14 @@ public class Tool {
 		CustomItemTagContainer tagContainer = itemMeta.getCustomTagContainer();
 		if(tagContainer.hasCustomTag(toolID, ItemTagType.STRING)) {
 		    String possibleID = tagContainer.getCustomTag(toolID, ItemTagType.STRING);
-		    tool = Smithy.plugin.getTool(possibleID);
+		    tool = getTool(possibleID);
 		    
 			if(tool == null) {
 				tool = Smithy.plugin.getDatabase().getTool(possibleID);
 				if(tool != null) {
-					tool.setID(possibleID);
 					tool.setItem(item);
 					tool.setDisplayName(itemMeta.getDisplayName());
-					Smithy.plugin.saveToolToMap(tool);
+					saveToolToMap(tool);
 				}
 				
 			}
@@ -79,7 +80,11 @@ public class Tool {
 		return tool;
 		
 	}
-	
+
+	public void setConfigDefinedToolName(String name) {
+		configDefinedToolName = name;
+	}
+
 	public void addToBlockTotal(long numToAdd) {
 		blocksBroken += numToAdd;
 	}
@@ -100,6 +105,22 @@ public class Tool {
 		for(String toolName : Smithy.plugin.getConfig().getConfigurationSection("Tools").getKeys(false)) {
 			tools[x++] = toolName;
 		}
+	}
+
+	public static Tool getTool(String id) {
+		return toolSet.get(id);
+	}
+
+	public static boolean toolExists(String id) {
+		return toolSet.containsKey(id);
+	}
+
+	public static String getToolID() {
+		return UUID.randomUUID().toString();
+	}
+
+	public static void saveToolToMap(Tool tool) {
+		toolSet.put(tool.getID(), tool);
 	}
 	
 	public void setBlocksBroken(long blocksBroken) {
@@ -123,7 +144,7 @@ public class Tool {
 	}
 	
 	public void saveToDatabase() {
-		Smithy.plugin.getDatabase().saveTool(uniqueToolID, blocksBroken, energy);
+		Smithy.plugin.getDatabase().saveTool(this);
 	}
 
 	public String getID() {
@@ -144,5 +165,17 @@ public class Tool {
 	
 	public void setDisplayName(String name) {
 		this.displayName = name;
+	}
+
+	public ItemStack getItemStack(){
+		return item;
+	}
+
+	public String getConfigDefinedToolName(){
+		return configDefinedToolName;
+	}
+
+	public Map<Enchantment,Integer> getEnchantmentList(){
+		return enchantmentList;
 	}
 }

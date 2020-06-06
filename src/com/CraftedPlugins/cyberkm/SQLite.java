@@ -1,5 +1,7 @@
 package com.CraftedPlugins.cyberkm;
 
+import net.minespire.smithy.Smithy;
+
 import java.io.File;
 import java.io.IOException;
 import java.sql.Connection;
@@ -7,10 +9,6 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.logging.Level;
-
-import com.CraftedPlugins.cyberkm.Database; // import the database class.
-
-import net.minespire.smithy.Smithy;
 
 
 public class SQLite extends Database{
@@ -24,6 +22,7 @@ public class SQLite extends Database{
             "`toolID` varchar(32) NOT NULL," + // This creates the different colums you will save data too. varchar(32) Is a string, int = integer
             "`blocksBroken` bigint(11) NOT NULL," +
             "`energy` double(11, 2) NOT NULL," +
+            "`toolConfigName` varchar(32) NOT NULL," +
             "PRIMARY KEY (`toolID`)" +  // This is creating 3 colums Player, Kills, Total. Primary key is what you are going to use as your indexer. Here we want to use player so
             ");"; // we can search by player, and get kills and total. If you some how were searching kills it would provide total and player.
 
