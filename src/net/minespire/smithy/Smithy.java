@@ -2,7 +2,7 @@ package net.minespire.smithy;
 
 import com.CraftedPlugins.cyberkm.Database;
 import com.CraftedPlugins.cyberkm.SQLite;
-import net.minespire.smithy.upgrade.UpgradeManager;
+import net.minespire.smithy.gui.GuiManager;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -15,7 +15,7 @@ import java.util.Map;
 public class Smithy extends JavaPlugin {
 	
 	public static Smithy plugin;
-	private UpgradeManager upgrade;
+	private GuiManager upgrade;
     private File customConfigFile;
     private FileConfiguration customConfig;
 
@@ -32,7 +32,7 @@ public class Smithy extends JavaPlugin {
 		Tool.getToolNames();
 		this.getCommand("smithy").setTabCompleter(new CommandCompleter());
 		this.getCommand("smithy").setExecutor(new CommandHandler());
-		upgrade = new UpgradeManager();
+		upgrade = new GuiManager();
 		getServer().getPluginManager().registerEvents(upgrade, this);
 		
         this.db = new SQLite(this);

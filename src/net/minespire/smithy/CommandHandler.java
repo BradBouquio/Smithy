@@ -1,9 +1,6 @@
 package net.minespire.smithy;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import net.minespire.smithy.upgrade.UpgradeManager;
+import net.minespire.smithy.gui.GuiManager;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
@@ -15,6 +12,9 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.tags.CustomItemTagContainer;
 import org.bukkit.inventory.meta.tags.ItemTagType;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class CommandHandler implements CommandExecutor {
 
@@ -67,7 +67,7 @@ public class CommandHandler implements CommandExecutor {
 					else sender.sendMessage("Usage: /smithy give [player] [tool]");
 				case "upgrade": 
 					if (player != null) {
-						UpgradeManager upgrade = new UpgradeManager();
+						GuiManager upgrade = new GuiManager();
 						upgrade.toolUpgrade(player);
 						break;
 					}
