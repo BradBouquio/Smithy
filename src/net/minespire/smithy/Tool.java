@@ -1,9 +1,12 @@
 package net.minespire.smithy;
 
 import net.md_5.bungee.api.ChatColor;
+import net.minespire.smithy.config.EnchantUpgrades;
+import net.minespire.smithy.util.Convert;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.enchantments.Enchantment;
+import org.bukkit.enchantments.EnchantmentWrapper;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -11,6 +14,7 @@ import org.bukkit.inventory.meta.tags.CustomItemTagContainer;
 import org.bukkit.inventory.meta.tags.ItemTagType;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -95,9 +99,18 @@ public class Tool {
 	
 	public void giveTool(Player playerName) {
 
-		playerName.getInventory().addItem(item);
+		playerName.getInventory().addItem(applyDefaultEnchants(item));
 
 		playerName.sendMessage("You have been given a " + ChatColor.translateAlternateColorCodes('&', displayName) + ChatColor.WHITE +"!");
+	}
+
+	private ItemStack applyDefaultEnchants(ItemStack item){
+		Map<String, List<Integer>> enchantsWithLevelsMap = EnchantUpgrades.getAvailableEnchants(this);
+		for(String enchant :  enchantsWithLevelsMap.keySet()){
+			Integer firstLevelOfEnchant = enchantsWithLevelsMap.get(enchant).get(0);
+			if(firstLevelOfEnchant != 0) item.addUnsafeEnchantment(EnchantmentWrapper.getByKey(NamespacedKey.minecraft(Convert.enchantToVanillaName(enchant).toLowerCase().replace(" ", "_"))), firstLevelOfEnchant);
+		}
+		return item;
 	}
 	
 	public static void getToolNames() {

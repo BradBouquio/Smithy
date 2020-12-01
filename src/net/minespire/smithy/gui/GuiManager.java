@@ -14,8 +14,6 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.ItemStack;
 
-import java.util.Stack;
-
 public class GuiManager implements Listener {
 	private Player player;
 	private boolean clickGui = true;
@@ -65,7 +63,7 @@ public class GuiManager implements Listener {
 			return;
 		if ((this.menuItem = this.guiClick.getMenuItem()) == null)
 			return;
-		this.menuItem.pressButton();
+		this.menuItem.press(clickEvent.getSlot());
 	}
 
 	Tool getTool() {
@@ -81,24 +79,33 @@ public class GuiManager implements Listener {
 		}
 	}
 
-	public boolean tryOpeningExistingGUI(int indexToOpen) {
-		Stack<Gui> existingGui = Gui.menuStackMap.get(this.player.getDisplayName());
-		if (existingGui != null && !existingGui.isEmpty()) {
-			existingGui.get(indexToOpen).open(this.player);
-			return true;
-		}
-		return false;
+	public void clearPlayerMenuStack(int indexToOpen) {
+		if(Gui.menuStackMap.get(this.player.getDisplayName()) != null)
+			Gui.menuStackMap.get(this.player.getDisplayName()).clear();
 	}
 
 	public void createMainGui(ItemStack itemInHand) {
-		if (tryOpeningExistingGUI(0))
-			return;
+		clearPlayerMenuStack(0);
 		Gui gui = new Gui(54, Smithy.plugin.getConfig().getString("GUI.GUIName"));
-		gui.makeGuiItem(Smithy.plugin.getConfig().getString("GUI.MenuItems.Tool.ItemName"), itemInHand, Smithy.plugin.getConfig().getString("GUI.MenuItems.Tool.Lore"), itemInHand.getType(), 0, Smithy.plugin.getConfig().getInt("GUI.MenuItems.Tool.InventorySlot"));
-		gui.makeGuiItem(Smithy.plugin.getConfig().getString("GUI.MenuItems.Enchants.ItemName"), Smithy.plugin.getConfig().getString("GUI.MenuItems.Enchants.Lore"), Material.getMaterial(Smithy.plugin.getConfig().getString("GUI.MenuItems.Enchants.Item")), Smithy.plugin.getConfig().getInt("GUI.MenuItems.Enchants.InventorySlot"));
-		gui.makeGuiItem(Smithy.plugin.getConfig().getString("GUI.MenuItems.Repair.ItemName"), Smithy.plugin.getConfig().getString("GUI.MenuItems.Repair.Lore"), Material.getMaterial(Smithy.plugin.getConfig().getString("GUI.MenuItems.Repair.Item")), Smithy.plugin.getConfig().getInt("GUI.MenuItems.Repair.InventorySlot"));
-		gui.makeGuiItem(Smithy.plugin.getConfig().getString("GUI.MenuItems.Particles.ItemName"), Smithy.plugin.getConfig().getString("GUI.MenuItems.Particles.Lore"), Material.getMaterial(Smithy.plugin.getConfig().getString("GUI.MenuItems.Particles.Item")), Smithy.plugin.getConfig().getInt("GUI.MenuItems.Particles.InventorySlot"));
-		gui.makeGuiItem(Smithy.plugin.getConfig().getString("GUI.MenuItems.Conjure.ItemName"), Smithy.plugin.getConfig().getString("GUI.MenuItems.Conjure.Lore"), Material.getMaterial(Smithy.plugin.getConfig().getString("GUI.MenuItems.Conjure.Item")), Smithy.plugin.getConfig().getInt("GUI.MenuItems.Conjure.InventorySlot"));
-		gui.openAddToList(this.player);
+		gui.makeGuiItem(Smithy.plugin.getConfig().getString("GUI.MenuItems.MainMenu.Tool.ItemName"), itemInHand,
+				Smithy.plugin.getConfig().getString("GUI.MenuItems.MainMenu.Tool.Lore"), itemInHand.getType(),
+				0, Smithy.plugin.getConfig().getInt("GUI.MenuItems.MainMenu.Tool.InventorySlot"));
+		gui.makeGuiItem(Smithy.plugin.getConfig().getString("GUI.MenuItems.MainMenu.Enchant.ItemName"),
+				Smithy.plugin.getConfig().getString("GUI.MenuItems.MainMenu.Enchant.Lore"),
+				Material.getMaterial(Smithy.plugin.getConfig().getString("GUI.MenuItems.MainMenu.Enchant.Item")),
+				Smithy.plugin.getConfig().getInt("GUI.MenuItems.MainMenu.Enchant.InventorySlot"));
+		gui.makeGuiItem(Smithy.plugin.getConfig().getString("GUI.MenuItems.MainMenu.Repair.ItemName"),
+				Smithy.plugin.getConfig().getString("GUI.MenuItems.MainMenu.Repair.Lore"),
+				Material.getMaterial(Smithy.plugin.getConfig().getString("GUI.MenuItems.MainMenu.Repair.Item")),
+				Smithy.plugin.getConfig().getInt("GUI.MenuItems.MainMenu.Repair.InventorySlot"));
+		gui.makeGuiItem(Smithy.plugin.getConfig().getString("GUI.MenuItems.MainMenu.Particles.ItemName"),
+				Smithy.plugin.getConfig().getString("GUI.MenuItems.MainMenu.Particles.Lore"),
+				Material.getMaterial(Smithy.plugin.getConfig().getString("GUI.MenuItems.MainMenu.Particles.Item")),
+				Smithy.plugin.getConfig().getInt("GUI.MenuItems.MainMenu.Particles.InventorySlot"));
+		gui.makeGuiItem(Smithy.plugin.getConfig().getString("GUI.MenuItems.MainMenu.Conjure.ItemName"),
+				Smithy.plugin.getConfig().getString("GUI.MenuItems.MainMenu.Conjure.Lore"),
+				Material.getMaterial(Smithy.plugin.getConfig().getString("GUI.MenuItems.MainMenu.Conjure.Item")),
+				Smithy.plugin.getConfig().getInt("GUI.MenuItems.MainMenu.Conjure.InventorySlot"));
+		gui.openAndAddToGuiList(this.player);
 	}
 }

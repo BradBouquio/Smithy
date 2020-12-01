@@ -16,8 +16,7 @@ public class EnchantUpgrades {
         List<String> enchantsWithLevelsList;
         Map<String,List<Integer>> enchantsWithLevelsMap;
         for (String tool: pluginConfig.getConfigurationSection("Tools").getKeys(false)) {
-            enchantsWithLevelsList = new ArrayList<>(Arrays.asList(pluginConfig.getString("Tools." + tool + ".DefaultEnchants").split(",")));
-            enchantsWithLevelsList.addAll(Arrays.asList(pluginConfig.getString("Tools." + tool + ".UnlockableEnchants").split(",")));
+            enchantsWithLevelsList = pluginConfig.getStringList("Tools." + tool + ".Enchants");
             enchantsWithLevelsMap = new LinkedHashMap<>();
 
             for(String enchantWithLevels : enchantsWithLevelsList)

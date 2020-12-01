@@ -14,26 +14,30 @@ import java.util.*;
 
 public class Gui {
 	Inventory GUI;
-
 	private ItemStack guiItem;
-
 	private int pageNumber;
-
 	public static Map<String, Stack<Gui>> menuStackMap = new HashMap<>();
-
 	private boolean isStackedMenu = false;
-
 	public static final int MAX_GUI_SLOTS = 54;
+	protected Player player;
 
 	public static Map<String, String> smithyGUIMenuNames = new HashMap<>(20);
+	public static List<String> smithyGUIButtonTypes = new ArrayList<>(20);
 
 	static {
 		smithyGUIMenuNames.put(Smithy.plugin.getConfig().getString("GUI.GUIName"), "MainMenu");
-		smithyGUIMenuNames.put(Smithy.plugin.getConfig().getString("GUI.MenuItems.Tool.MenuName"), "Tool");
-		smithyGUIMenuNames.put(Smithy.plugin.getConfig().getString("GUI.MenuItems.Enchants.MenuName"), "Enchants");
-		smithyGUIMenuNames.put(Smithy.plugin.getConfig().getString("GUI.MenuItems.Repair.MenuName"), "Repair");
-		smithyGUIMenuNames.put(Smithy.plugin.getConfig().getString("GUI.MenuItems.Particles.MenuName"), "Particles");
-		smithyGUIMenuNames.put(Smithy.plugin.getConfig().getString("GUI.MenuItems.Conjure.MenuName"), "Conjure");
+		smithyGUIMenuNames.put(Smithy.plugin.getConfig().getString("GUI.MenuItems.ToolMenu.MenuName"), "Tool");
+		smithyGUIMenuNames.put(Smithy.plugin.getConfig().getString("GUI.MenuItems.EnchantMenu.MenuName"), "Enchants");
+		smithyGUIMenuNames.put(Smithy.plugin.getConfig().getString("GUI.MenuItems.RepairMenu.MenuName"), "Repair");
+		smithyGUIMenuNames.put(Smithy.plugin.getConfig().getString("GUI.MenuItems.ParticlesMenu.MenuName"), "Particles");
+		smithyGUIMenuNames.put(Smithy.plugin.getConfig().getString("GUI.MenuItems.ConjureMenu.MenuName"), "Conjure");
+		smithyGUIMenuNames.put("Confirm Upgrade Purchase", "ConfirmEnchant");
+		smithyGUIMenuNames.put(Smithy.plugin.getConfig().getString("GUI.MenuItems.EnchantMenu.ConfirmationPrompt.Title"),"Confirm Enchant Unlock");
+
+		smithyGUIButtonTypes.add(Smithy.plugin.getConfig().getString("GUI.MenuItems.EnchantMenu.Enchantments.LockedItem.Item"));
+		smithyGUIButtonTypes.add(Smithy.plugin.getConfig().getString("GUI.MenuItems.EnchantMenu.EnchantLevels.LockedItem.Item"));
+
+
 	}
 
 	public Gui(int slots, String name) {
@@ -69,9 +73,9 @@ public class Gui {
 		List<String> itemLore = new ArrayList<>();
 		ItemMeta meta = this.guiItem.getItemMeta();
 		String[] lorePieces = lore.split("\\|");
-		for (String t : lorePieces)
-			itemLore.add(t);
-		meta.setDisplayName(name);
+		for (int x = 0; x < lorePieces.length; x++)
+			itemLore.add(x, ChatColor.translateAlternateColorCodes('&', lorePieces[x]));
+		meta.setDisplayName(ChatColor.translateAlternateColorCodes('&', name));
 		meta.setLore(itemLore);
 		this.guiItem.setItemMeta(meta);
 		this.GUI.setItem(slot, this.guiItem);
@@ -97,10 +101,11 @@ public class Gui {
 		player.openInventory(this.GUI);
 	}
 
-	public void openAddToList(Player player) {
+	public void openAndAddToGuiList(Player player) {
 		addToMenuMap(player);
 		player.openInventory(this.GUI);
 	}
+
 
 	public void addToMenuMap(Player player) {
 		if (menuStackMap.containsKey(player.getDisplayName())) {
@@ -111,6 +116,7 @@ public class Gui {
 			menuStack.push(this);
 			menuStackMap.put(player.getDisplayName(), menuStack);
 		}
+		Bukkit.broadcastMessage(menuStackMap.get(player.getDisplayName()).size() + "");
 	}
 
 	public String parsePlaceholders(String string, Tool tool) {
@@ -120,5 +126,9 @@ public class Gui {
 			string = string.replace("{ItemName}", String.valueOf(tool.getDisplayName()));
 		}
 		return string;
+	}
+
+	public void setPlayer(Player player) {
+		this.player = player;
 	}
 }

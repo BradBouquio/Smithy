@@ -23,20 +23,12 @@
     <orderEntry type="module-library" scope="PROVIDED">
       <library>
         <CLASSES>
-          <root url="jar://$MODULE_DIR$/Resources/spigot-api-1.15.2-R0.1-SNAPSHOT-shaded.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library" scope="PROVIDED">
-      <library>
-        <CLASSES>
           <root url="jar://$USER_HOME$/Downloads/sqlite-jdbc-3.27.2.1.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
       </library>
     </orderEntry>
+    <orderEntry type="library" scope="PROVIDED" name="spigot-api-1.16.4-R0.1-SNAPSHOT-shaded" level="project" />
   </component>
 </module>

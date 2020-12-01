@@ -2,16 +2,14 @@ package net.minespire.smithy.gui;
 
 import org.bukkit.entity.Player;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class EnchantGui extends Gui {
     boolean finishedAddingEnchants = true;
     boolean finishedAddingLevels = true;
     public static Map<String, List<EnchantGui>> enchantPageList = new HashMap<>();
     public static Map<String, Integer> currentlyViewedPage = new HashMap<>();
+    Map<Integer, Map.Entry<String, Integer>> getEnchantFromIndex = new HashMap<>();
 
     List<String> enchantsToSkip = new ArrayList<>();
     Integer lastLevelListedInGUI = Integer.valueOf(0);
@@ -39,6 +37,7 @@ public class EnchantGui extends Gui {
     }
 
     public void openAndAddToList(Player player) {
+        //addToMenuMap(player);
         addToEnchantPageList(player);
 //        Integer currentPage = Integer.valueOf(0);
 //        if (currentlyViewedPage.containsKey(player.getDisplayName()))
@@ -47,7 +46,7 @@ public class EnchantGui extends Gui {
         player.openInventory(this.GUI);
     }
 
-    public void addToEnchantPageList(Player player) {
+    private void addToEnchantPageList(Player player) {
         if (enchantPageList.containsKey(player.getDisplayName())) {
             List<EnchantGui> pageList = enchantPageList.get(player.getDisplayName());
             if (pageList.contains(this)) return;
@@ -74,4 +73,9 @@ public class EnchantGui extends Gui {
     public void setFinishedAddingLevels(boolean isFinished) {
         this.finishedAddingLevels = isFinished;
     }
+
+//    public void addToMenuList(){
+//        this.addToMenuMap(player);
+//    }
+
 }
